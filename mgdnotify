@@ -1,0 +1,34 @@
+#!/bin/bash
+
+mtext=""
+dialog=0
+
+if [[ -z "$1" ]]; then
+        dest=$(grep "^From:"|cut -f 2 -d:|cut -f1 -d'<')
+        mtext="New Email from: ${dest}"
+        dialog=1
+else
+        mtext=$1
+
+fi
+
+
+text_size=48
+max_delay=5
+tcolor="#EB1010"
+flashes=5
+outlinecolour="#1F0000"
+
+if [ ${dialog} -eq 1 ]; then
+        zenity --info --text="${mtext}" --title='Warning!' &
+fi
+
+i=0
+while [ ${i} -lt ${flashes} ]; do
+        echo ${mtext} | osd_cat  -A center -p bottom  -c "${tcolor}" -f *-monotype-arial-bold-r-normal-*-${text_size}-*-*-*-p-*-* -d1 -O1 -u ${outlinecolour} &
+        echo ${mtext} | osd_cat  -A left -p middle -c "${tcolor}" -f *-monotype-arial-bold-r-normal-*-${text_size}-*-*-*-p-*-* -d1 -O1 -u ${outlinecolour} &
+        echo ${mtext} | osd_cat  -A right -p middle -c "${tcolor}" -f *-monotype-arial-bold-r-normal-*-${text_size}-*-*-*-p-*-* -d1 -O1 -u ${outlinecolour}
+
+        sleep 0.5
+        let i=${i}+1
+done
